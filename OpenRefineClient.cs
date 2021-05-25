@@ -24,6 +24,7 @@ namespace OpenRefine.Net
         public async Task<ApplyOperationsResponse> ApplyOperationsAsync(ApplyOperationsRequest request)
         {
             Url requestUri = new Url("command/core/apply-operations");
+            requestUri.QueryParams.Add("csrf_token", request.Token);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var multiPartForm = new MultipartFormDataContent();
@@ -53,14 +54,21 @@ namespace OpenRefine.Net
 
         public async Task<CreateProjectResponse> CreateProjectAsync(CreateProjectRequest request)
         {
-            const string requestUri = "command/core/create-project-from-upload";
+            Url requestUri = new Url("command/core/create-project-from-upload");
+            requestUri.QueryParams.Add("csrf_token", request.Token);
 
             var multiPartForm = new MultipartFormDataContent();
 
+            string options = request.Options != null ? JsonConvert.SerializeObject(request.Options) : string.Empty;
+
+            multiPartForm.Add(new ByteArrayContent(request.Content), "project-file", request.FileName);
             multiPartForm.Add(new StringContent(request.ProjectName), "project-name");
-            multiPartForm.Add(new ByteArrayContent(request.FileContent), "project-file");
-            multiPartForm.Add(new StringContent(request.Format), "format");
-            multiPartForm.Add(new StringContent(JsonConvert.SerializeObject(request.Options)), "options");
+
+            if (!string.IsNullOrEmpty(request.Format))
+                multiPartForm.Add(new StringContent(request.Format), "format");
+            
+            if (!string.IsNullOrEmpty(options))
+                multiPartForm.Add(new StringContent(options), "options");
 
             var requestMessage = new HttpRequestMessage
             {
@@ -76,10 +84,17 @@ namespace OpenRefine.Net
                 
                 var responseUri = new Url(responseMessage.RequestMessage.RequestUri.ToString());
 
+                var responseString = await responseMessage.Content.ReadAsStringAsync();
+
                 var (name, val) = responseUri.QueryParams.FirstOrDefault(q => q.Name == "project");
 
+                string projectId = val?.ToString();
+
+                if (string.IsNullOrEmpty(projectId))
+                    return JsonConvert.DeserializeObject<CreateProjectResponse>(responseString);
+
                 return new CreateProjectResponse {
-                    ProjectId = val?.ToString()
+                    ProjectId = projectId
                 };
             }
             catch
@@ -91,6 +106,7 @@ namespace OpenRefine.Net
         public async Task<DeleteProjectResponse> DeleteProjectAsync(DeleteProjectRequest request)
         {
             Url requestUri = new Url("command/core/delete-project");
+            requestUri.QueryParams.Add("csrf_token", request.Token);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var requestMessage = new HttpRequestMessage
@@ -119,6 +135,8 @@ namespace OpenRefine.Net
         public async Task<string> ExportRowsAsync(ExportRowsRequest request)
         {
             Url requestUri = new Url("command/core/export-rows");
+            requestUri.QueryParams.Add("csrf_token", request.Token);
+
             requestUri.QueryParams.Add("project", request.ProjectId);
             requestUri.QueryParams.Add("format", request.Format);
 
@@ -150,9 +168,37 @@ namespace OpenRefine.Net
             throw new NotImplementedException();
         }
 
+        public async Task<GetCsrfTokenResponse> GetCsrfTokenAsyc()
+        {
+            Url requestUri = new Url("command/core/get-csrf-token");
+
+            var requestMessage = new HttpRequestMessage
+            {
+                RequestUri = new Uri(requestUri, UriKind.Relative),
+                Method = HttpMethod.Get
+            };
+
+            try
+            {
+                var responseMessage = await _httpClient.SendAsync(requestMessage);
+                responseMessage.EnsureSuccessStatusCode();
+
+                var responseString = await responseMessage.Content.ReadAsStringAsync();
+
+                var response = JsonConvert.DeserializeObject<GetCsrfTokenResponse>(responseString);
+
+                return response;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<GetProjectModelsResponse> GetProjectModelsAsync(GetProjectModelsRequest request)
         {
             Url requestUri = new Url("command/core/get-models");
+            requestUri.QueryParams.Add("csrf_token", request.Token);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var requestMessage = new HttpRequestMessage

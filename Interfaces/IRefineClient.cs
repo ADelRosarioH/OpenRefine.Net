@@ -9,6 +9,8 @@ namespace OpenRefine.Net.Interfaces
 {
     public interface IRefineClient
     {
+        Task<GetCsrfTokenResponse> GetCsrfTokenAsyc();
+
         Task<CreateProjectResponse> CreateProjectAsync(CreateProjectRequest request);
         
         Task<GetProjectModelsResponse> GetProjectModelsAsync(GetProjectModelsRequest request);
