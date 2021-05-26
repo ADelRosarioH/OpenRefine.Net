@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenRefine.Net", "OpenRefine.Net\OpenRefine.Net.csproj", "{EFE24E3E-84B4-4BAB-AF9E-4D5EC77F3096}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenRefine.Net.Tests", "OpenRefine.Net.Tests\OpenRefine.Net.Tests.csproj", "{6B980118-718F-4802-8DF7-B45D5DC46C97}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFE24E3E-84B4-4BAB-AF9E-4D5EC77F3096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE24E3E-84B4-4BAB-AF9E-4D5EC77F3096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE24E3E-84B4-4BAB-AF9E-4D5EC77F3096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE24E3E-84B4-4BAB-AF9E-4D5EC77F3096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B980118-718F-4802-8DF7-B45D5DC46C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B980118-718F-4802-8DF7-B45D5DC46C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B980118-718F-4802-8DF7-B45D5DC46C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B980118-718F-4802-8DF7-B45D5DC46C97}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7B39D2C7-E15C-43A5-8550-2A0D93C80AAB}
+	EndGlobalSection
+EndGlobal
