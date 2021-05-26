@@ -34,12 +34,45 @@ var project = await _client.CreateProjectAsync(new CreateProjectRequest
     FileName = fileInfo.Name,
     Content = content
 });
+
+var operations = File.ReadAllText("Samples/operations.json");
+
+var appliedOps = await _client.ApplyOperationsAsync(new ApplyOperationsRequest
+{
+    Token = csrf.Token,
+    ProjectId = project.ProjectId,
+    Operations = operations
+});
+
+var fileName = await _client.ExportRowsAsync(new ExportRowsRequest { 
+    Token = csrf.Token,
+    ProjectId = project.ProjectId,
+    FileName = "test.csv"
+});
+
+var results = File.ReadAllText(fileName);
+
+var deleted = await _client.DeleteProjectAsync(new DeleteProjectRequest {
+    Token = csrf.Token,
+    ProjectId = project.ProjectId
+});
+
+Console.WriteLine(results);
 ```
 
 ## Installation
+
+Clone this repository or use the [NuGet](https://www.nuget.org/packages/OpenRefine.Net/) package.
+
 ## Tests
 
 You must have OpenRefine running at http://localhost:3333.
 
+```sh
+> dotnet test
+```
+
 ## Contribute
+
+Pull requests with passing tests are welcome! 
 
