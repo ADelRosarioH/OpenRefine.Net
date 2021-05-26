@@ -1,8 +1,4 @@
 ﻿using OpenRefine.Net.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenRefine.Net.Interfaces
@@ -23,8 +19,7 @@ namespace OpenRefine.Net.Interfaces
 
         Task<GetProcessesResponse> CheckStatusOfAsyncProcessesAsync(GetProcessesRequest request);
 
-        Task<GetProjectMetadataResponse> GetAllProjectMetadataAsync(GetProjectMetadataRequest request);
-
+        Task<GetProjectsMetadataResponse> GetAllProjectsMetadataAsync(GetProjectsMetadataRequest request);
 
     }
 }

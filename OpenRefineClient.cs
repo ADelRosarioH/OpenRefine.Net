@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using OpenRefine.Net.Interfaces;
 using OpenRefine.Net.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -27,15 +28,17 @@ namespace OpenRefine.Net
             requestUri.QueryParams.Add("csrf_token", request.Token);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
-            var multiPartForm = new MultipartFormDataContent();
-            multiPartForm.Add(new StringContent(request.Operations), "operations");
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("operations", request.Operations),
+            });
 
             try
             {
-                var responseMessage = await _httpClient.PostAsync(requestUri, multiPartForm);
-                responseMessage.EnsureSuccessStatusCode();
-
+                var responseMessage = await _httpClient.PostAsync(requestUri, content);
                 var responseString = await responseMessage.Content.ReadAsStringAsync();
+                
+                responseMessage.EnsureSuccessStatusCode();
 
                 var response = JsonConvert.DeserializeObject<ApplyOperationsResponse>(responseString);
 
@@ -47,9 +50,33 @@ namespace OpenRefine.Net
             }
         }
 
-        public Task<GetProcessesResponse> CheckStatusOfAsyncProcessesAsync(GetProcessesRequest request)
+        public async Task<GetProcessesResponse> CheckStatusOfAsyncProcessesAsync(GetProcessesRequest request)
         {
-            throw new NotImplementedException();
+            Url requestUri = new Url("command/core/get-processes");
+            requestUri.QueryParams.Add("csrf_token", request.Token);
+            requestUri.QueryParams.Add("project", request.ProjectId);
+
+            var requestMessage = new HttpRequestMessage
+            {
+                RequestUri = new Uri(requestUri, UriKind.Relative),
+                Method = HttpMethod.Get
+            };
+
+            try
+            {
+                var responseMessage = await _httpClient.SendAsync(requestMessage);
+                var responseString = await responseMessage.Content.ReadAsStringAsync();
+
+                responseMessage.EnsureSuccessStatusCode();
+
+                var response = JsonConvert.DeserializeObject<GetProcessesResponse>(responseString);
+
+                return response;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<CreateProjectResponse> CreateProjectAsync(CreateProjectRequest request)
@@ -80,11 +107,11 @@ namespace OpenRefine.Net
             try
             {
                 var responseMessage = await _httpClient.SendAsync(requestMessage);
+                var responseString = await responseMessage.Content.ReadAsStringAsync();
+
                 responseMessage.EnsureSuccessStatusCode();
                 
                 var responseUri = new Url(responseMessage.RequestMessage.RequestUri.ToString());
-
-                var responseString = await responseMessage.Content.ReadAsStringAsync();
 
                 var (name, val) = responseUri.QueryParams.FirstOrDefault(q => q.Name == "project");
 
@@ -112,15 +139,15 @@ namespace OpenRefine.Net
             var requestMessage = new HttpRequestMessage
             {
                 RequestUri = new Uri(requestUri, UriKind.Relative),
-                Method = HttpMethod.Get
+                Method = HttpMethod.Post
             };
 
             try
             {
                 var responseMessage = await _httpClient.SendAsync(requestMessage);
-                responseMessage.EnsureSuccessStatusCode();
-
                 var responseString = await responseMessage.Content.ReadAsStringAsync();
+                
+                responseMessage.EnsureSuccessStatusCode();
 
                 var response = JsonConvert.DeserializeObject<DeleteProjectResponse>(responseString);
 
@@ -145,7 +172,7 @@ namespace OpenRefine.Net
 
             try
             {
-                var fileInfo = new FileInfo(request.DownloadPath);
+                var fileInfo = new FileInfo(request.FileName);
 
                 var responseMessage = await _httpClient.PostAsync(requestUri, multiPartForm);
                 responseMessage.EnsureSuccessStatusCode();
@@ -163,9 +190,31 @@ namespace OpenRefine.Net
             }
         }
 
-        public Task<GetProjectMetadataResponse> GetAllProjectMetadataAsync(GetProjectMetadataRequest request)
+        public async Task<GetProjectsMetadataResponse> GetAllProjectsMetadataAsync(GetProjectsMetadataRequest request)
         {
-            throw new NotImplementedException();
+            Url requestUri = new Url("command/core/get-all-project-metadata");
+
+            var requestMessage = new HttpRequestMessage
+            {
+                RequestUri = new Uri(requestUri, UriKind.Relative),
+                Method = HttpMethod.Get
+            };
+
+            try
+            {
+                var responseMessage = await _httpClient.SendAsync(requestMessage);
+                var responseString = await responseMessage.Content.ReadAsStringAsync();
+
+                responseMessage.EnsureSuccessStatusCode();
+
+                var response = JsonConvert.DeserializeObject<GetProjectsMetadataResponse>(responseString);
+
+                return response;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<GetCsrfTokenResponse> GetCsrfTokenAsyc()
@@ -181,9 +230,9 @@ namespace OpenRefine.Net
             try
             {
                 var responseMessage = await _httpClient.SendAsync(requestMessage);
-                responseMessage.EnsureSuccessStatusCode();
-
                 var responseString = await responseMessage.Content.ReadAsStringAsync();
+                
+                responseMessage.EnsureSuccessStatusCode();
 
                 var response = JsonConvert.DeserializeObject<GetCsrfTokenResponse>(responseString);
 
@@ -210,9 +259,9 @@ namespace OpenRefine.Net
             try
             {
                 var responseMessage = await _httpClient.SendAsync(requestMessage);
-                responseMessage.EnsureSuccessStatusCode();
-
                 var responseString = await responseMessage.Content.ReadAsStringAsync();
+                
+                responseMessage.EnsureSuccessStatusCode();
 
                 var response = JsonConvert.DeserializeObject<GetProjectModelsResponse>(responseString);
 
