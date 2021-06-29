@@ -1,25 +1,26 @@
 ﻿using OpenRefine.Net.Models;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenRefine.Net.Interfaces
 {
     public interface IRefineClient
     {
-        Task<GetCsrfTokenResponse> GetCsrfTokenAsyc();
+        Task<GetCsrfTokenResponse> GetCsrfTokenAsyc(CancellationToken cancellationToken = default);
 
-        Task<CreateProjectResponse> CreateProjectAsync(CreateProjectRequest request);
+        Task<CreateProjectResponse> CreateProjectAsync(CreateProjectRequest request, CancellationToken cancellationToken = default);
         
-        Task<GetProjectModelsResponse> GetProjectModelsAsync(GetProjectModelsRequest request);
+        Task<GetProjectModelsResponse> GetProjectModelsAsync(GetProjectModelsRequest request, CancellationToken cancellationToken = default);
 
-        Task<ApplyOperationsResponse> ApplyOperationsAsync(ApplyOperationsRequest request);
+        Task<ApplyOperationsResponse> ApplyOperationsAsync(ApplyOperationsRequest request, CancellationToken cancellationToken = default);
 
-        Task<string> ExportRowsAsync(ExportRowsRequest request);
+        Task<string> ExportRowsAsync(ExportRowsRequest request, CancellationToken cancellationToken = default);
 
-        Task<DeleteProjectResponse> DeleteProjectAsync(DeleteProjectRequest request);
+        Task<DeleteProjectResponse> DeleteProjectAsync(DeleteProjectRequest request, CancellationToken cancellationToken = default);
 
-        Task<GetProcessesResponse> CheckStatusOfAsyncProcessesAsync(GetProcessesRequest request);
+        Task<GetProcessesResponse> CheckStatusOfAsyncProcessesAsync(GetProcessesRequest request, CancellationToken cancellationToken = default);
 
-        Task<GetProjectsMetadataResponse> GetAllProjectsMetadataAsync(GetProjectsMetadataRequest request);
+        Task<GetProjectsMetadataResponse> GetAllProjectsMetadataAsync(GetProjectsMetadataRequest request, CancellationToken cancellationToken = default);
 
     }
 }
