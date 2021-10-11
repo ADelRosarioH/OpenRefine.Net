@@ -25,7 +25,7 @@ var content = new byte[fileInfo.Length];
 using var fs = fileInfo.OpenRead();
 await fs.ReadAsync(content);
 
-var csrf = await _client.GetCsrfTokenAsyc();
+var csrf = await _client.GetCsrfTokenAsync();
 
 var project = await _client.CreateProjectAsync(new CreateProjectRequest
 {
