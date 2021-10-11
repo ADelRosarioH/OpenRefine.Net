@@ -218,7 +218,7 @@ namespace OpenRefine.Net
             }
         }
 
-        public async Task<GetCsrfTokenResponse> GetCsrfTokenAsyc(CancellationToken cancellationToken = default)
+        public async Task<GetCsrfTokenResponse> GetCsrfTokenAsync(CancellationToken cancellationToken = default)
         {
             Url requestUri = new Url("command/core/get-csrf-token");
 

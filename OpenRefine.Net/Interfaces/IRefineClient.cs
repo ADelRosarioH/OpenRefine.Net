@@ -6,7 +6,7 @@ namespace OpenRefine.Net.Interfaces
 {
     public interface IRefineClient
     {
-        Task<GetCsrfTokenResponse> GetCsrfTokenAsyc(CancellationToken cancellationToken = default);
+        Task<GetCsrfTokenResponse> GetCsrfTokenAsync(CancellationToken cancellationToken = default);
 
         Task<CreateProjectResponse> CreateProjectAsync(CreateProjectRequest request, CancellationToken cancellationToken = default);
         

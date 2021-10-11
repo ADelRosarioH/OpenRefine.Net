@@ -17,7 +17,7 @@ namespace OpenRefine.Net.Tests
         [Fact]
         public async void OpenRefineClient_GetCsrfToken_ShouldReturn_Token()
         {
-            var csrf = await _client.GetCsrfTokenAsyc();
+            var csrf = await _client.GetCsrfTokenAsync();
 
             Assert.NotEmpty(csrf.Token);
         }
@@ -33,7 +33,7 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsyc();
+            var csrf = await _client.GetCsrfTokenAsync();
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
@@ -56,7 +56,7 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsyc();
+            var csrf = await _client.GetCsrfTokenAsync();
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
@@ -84,7 +84,7 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsyc();
+            var csrf = await _client.GetCsrfTokenAsync();
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
@@ -117,7 +117,7 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsyc();
+            var csrf = await _client.GetCsrfTokenAsync();
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
@@ -151,7 +151,7 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsyc();
+            var csrf = await _client.GetCsrfTokenAsync();
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
@@ -180,7 +180,7 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsyc();
+            var csrf = await _client.GetCsrfTokenAsync();
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
@@ -209,7 +209,7 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsyc();
+            var csrf = await _client.GetCsrfTokenAsync();
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
