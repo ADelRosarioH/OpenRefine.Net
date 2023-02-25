@@ -23,6 +23,11 @@ namespace OpenRefine.Net
             };
         }
 
+        public OpenRefineClient(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
         public async Task<ApplyOperationsResponse> ApplyOperationsAsync(ApplyOperationsRequest request, CancellationToken cancellationToken = default)
         {
             Url requestUri = new Url("command/core/apply-operations");
