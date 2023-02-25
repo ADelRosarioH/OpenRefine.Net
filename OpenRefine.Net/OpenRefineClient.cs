@@ -31,7 +31,7 @@ namespace OpenRefine.Net
         public async Task<ApplyOperationsResponse> ApplyOperationsAsync(ApplyOperationsRequest request, CancellationToken cancellationToken = default)
         {
             Url requestUri = new Url("command/core/apply-operations");
-            requestUri.QueryParams.Add("csrf_token", request.Token);
+            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var content = new FormUrlEncodedContent(new[]
@@ -59,7 +59,7 @@ namespace OpenRefine.Net
         public async Task<GetProcessesResponse> CheckStatusOfAsyncProcessesAsync(GetProcessesRequest request, CancellationToken cancellationToken = default)
         {
             Url requestUri = new Url("command/core/get-processes");
-            requestUri.QueryParams.Add("csrf_token", request.Token);
+            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var requestMessage = new HttpRequestMessage
@@ -88,7 +88,7 @@ namespace OpenRefine.Net
         public async Task<CreateProjectResponse> CreateProjectAsync(CreateProjectRequest request, CancellationToken cancellationToken = default)
         {
             Url requestUri = new Url("command/core/create-project-from-upload");
-            requestUri.QueryParams.Add("csrf_token", request.Token);
+            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
 
             var multiPartForm = new MultipartFormDataContent();
 
@@ -139,7 +139,7 @@ namespace OpenRefine.Net
         public async Task<DeleteProjectResponse> DeleteProjectAsync(DeleteProjectRequest request, CancellationToken cancellationToken = default)
         {
             Url requestUri = new Url("command/core/delete-project");
-            requestUri.QueryParams.Add("csrf_token", request.Token);
+            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var requestMessage = new HttpRequestMessage
@@ -168,7 +168,7 @@ namespace OpenRefine.Net
         public async Task<string> ExportRowsAsync(ExportRowsRequest request, CancellationToken cancellationToken = default)
         {
             Url requestUri = new Url("command/core/export-rows");
-            requestUri.QueryParams.Add("csrf_token", request.Token);
+            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
 
             requestUri.QueryParams.Add("project", request.ProjectId);
             requestUri.QueryParams.Add("format", request.Format);
@@ -253,7 +253,7 @@ namespace OpenRefine.Net
         public async Task<GetProjectModelsResponse> GetProjectModelsAsync(GetProjectModelsRequest request, CancellationToken cancellationToken = default)
         {
             Url requestUri = new Url("command/core/get-models");
-            requestUri.QueryParams.Add("csrf_token", request.Token);
+            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var requestMessage = new HttpRequestMessage

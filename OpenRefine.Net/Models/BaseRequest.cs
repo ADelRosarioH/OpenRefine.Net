@@ -2,7 +2,7 @@
 {
     public abstract class BaseRequest
     {
-        public string Token { get; set; }
+        public string CsrfToken { get; set; }
         public string ProjectId { get; set; }
     }
 }

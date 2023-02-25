@@ -38,7 +38,7 @@ namespace OpenRefine.Net.Tests
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectName = fileInfo.Name,
                 FileName = fileInfo.Name,
                 Content = content
@@ -61,14 +61,14 @@ namespace OpenRefine.Net.Tests
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectName = fileInfo.Name,
                 FileName = fileInfo.Name,
                 Content = content
             });
 
             var models = await _client.GetProjectModelsAsync(new GetProjectModelsRequest { 
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectId = project.ProjectId
             });
 
@@ -89,7 +89,7 @@ namespace OpenRefine.Net.Tests
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectName = fileInfo.Name,
                 FileName = fileInfo.Name,
                 Content = content,
@@ -100,7 +100,7 @@ namespace OpenRefine.Net.Tests
 
             var appliedOps = await _client.ApplyOperationsAsync(new ApplyOperationsRequest
             {
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectId = project.ProjectId,
                 Operations = operations
             });
@@ -122,7 +122,7 @@ namespace OpenRefine.Net.Tests
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectName = fileInfo.Name,
                 FileName = fileInfo.Name,
                 Content = content,
@@ -130,7 +130,7 @@ namespace OpenRefine.Net.Tests
             });
 
             var fileName = await _client.ExportRowsAsync(new ExportRowsRequest { 
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectId = project.ProjectId,
                 FileName = "test.csv"
             });
@@ -156,7 +156,7 @@ namespace OpenRefine.Net.Tests
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectName = fileInfo.Name,
                 FileName = fileInfo.Name,
                 Content = content,
@@ -164,7 +164,7 @@ namespace OpenRefine.Net.Tests
             });
 
             var deleted = await _client.DeleteProjectAsync(new DeleteProjectRequest {
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectId = project.ProjectId
             });
 
@@ -185,7 +185,7 @@ namespace OpenRefine.Net.Tests
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectName = fileInfo.Name,
                 FileName = fileInfo.Name,
                 Content = content,
@@ -193,7 +193,7 @@ namespace OpenRefine.Net.Tests
             });
 
             var metadata = await _client.GetAllProjectsMetadataAsync(new GetProjectsMetadataRequest { 
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectId = project.ProjectId
             });
 
@@ -214,7 +214,7 @@ namespace OpenRefine.Net.Tests
 
             var project = await _client.CreateProjectAsync(new CreateProjectRequest
             {
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectName = fileInfo.Name,
                 FileName = fileInfo.Name,
                 Content = content,
@@ -222,7 +222,7 @@ namespace OpenRefine.Net.Tests
             });
 
             var processes = await _client.CheckStatusOfAsyncProcessesAsync(new GetProcessesRequest { 
-                Token = csrf.Token,
+                CsrfToken = csrf.Token,
                 ProjectId = project.ProjectId
             });
 
