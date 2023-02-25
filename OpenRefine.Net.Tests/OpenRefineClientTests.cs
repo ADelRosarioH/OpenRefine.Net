@@ -1,6 +1,7 @@
+using System.IO;
+using OpenRefine.Net.Helpers;
 using OpenRefine.Net.Interfaces;
 using OpenRefine.Net.Models;
-using System.IO;
 using Xunit;
 
 namespace OpenRefine.Net.Tests

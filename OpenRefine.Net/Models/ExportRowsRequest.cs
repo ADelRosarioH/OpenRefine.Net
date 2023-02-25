@@ -1,4 +1,6 @@
-﻿namespace OpenRefine.Net.Models
+﻿using OpenRefine.Net.Helpers;
+
+namespace OpenRefine.Net.Models
 {
     public class ExportRowsRequest : BaseRequest
     {

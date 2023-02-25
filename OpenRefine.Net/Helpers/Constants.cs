@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace OpenRefine.Net.Models
+﻿namespace OpenRefine.Net.Helpers
 {
     public static class SupportedFormats
     {
