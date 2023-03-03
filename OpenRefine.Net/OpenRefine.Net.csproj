@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
 		<PackageId>OpenRefine.Net</PackageId>
 		<Version>0.0.2</Version>
 		<Authors>Anthony Del Rosario</Authors>
@@ -12,9 +11,10 @@
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/ADelRosarioH/OpenRefine.Net</RepositoryUrl>
 		<RepositoryType>Github</RepositoryType>
+		<TargetFramework>net7.0</TargetFramework>
+		<LangVersion>default</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Flurl" Version="3.0.2" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Flurl" Version="3.0.7" />
 	</ItemGroup>
 </Project>
