@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Text.Json;
 
 namespace OpenRefine.Net.Models
 {
     public class GetProcessesResponse : BaseResponse
     {
-        public IReadOnlyCollection<JObject> Processes { get; set; }
+        public IReadOnlyCollection<JsonElement> Processes { get; set; }
     }
 }
