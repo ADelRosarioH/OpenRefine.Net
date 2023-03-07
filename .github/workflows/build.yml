@@ -13,6 +13,8 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+
 jobs:
   build:
     env:
@@ -36,10 +38,10 @@ jobs:
 
       - name: Setup OpenRefine
         run: |
-          curl https://github.com/OpenRefine/OpenRefine/releases/download/$REFINE_VERSION/openrefine-linux-$OPENREFINE_VERSION.tar.gz
-          tar xzf openrefine-$REFINE_VERSION-linux.tar.gz
-          cd openrefine-$REFINE_VERSION
-          ./refine
+          curl -L -O https://github.com/OpenRefine/OpenRefine/releases/download/${{env.REFINE_VERSION}}/openrefine-linux-${{env.REFINE_VERSION}}.tar.gz
+          tar xzf openrefine-linux-${{env.REFINE_VERSION}}.tar.gz
+          cd openrefine-${{env.REFINE_VERSION}}
+          ./refine &
 
       - name: Restore
         run: dotnet restore
