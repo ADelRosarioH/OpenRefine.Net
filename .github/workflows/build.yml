@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - OpenRefine.NET.sln
+      - OpenRefine.NET/**
+      - OpenRefine.NET.Tests/**
 
   pull_request:
     branches:
@@ -11,6 +15,9 @@ on:
 
 jobs:
   build:
+    env:
+      REFINE_VERSION: "3.7.0"
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,6 +33,17 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore
+
+      - name: Setup OpenRefine
+        uses: actions/setup-java@v3
+        with:
+          distribution: "microsoft" # See 'Supported distributions' for available options
+          java-version: "17"
+        run: |
+          curl https://github.com/OpenRefine/OpenRefine/releases/download/$REFINE_VERSION/openrefine-linux-$OPENREFINE_VERSION.tar.gz
+          tar xzf openrefine-$REFINE_VERSION-linux.tar.gz
+          cd openrefine-$REFINE_VERSION
+          ./refine
 
       - name: Test
         run: dotnet test --no-restore --no-build --verbosity normal
