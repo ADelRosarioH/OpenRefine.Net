@@ -14,11 +14,11 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<LangVersion>default</LangVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageReadmeFile>LICENSE.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
-		<None Include="..\LICENSE.md" Pack="true" PackagePath="\" />
+		<None Include="..\LICENSE" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Flurl" Version="3.0.7" />
