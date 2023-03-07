@@ -4,8 +4,14 @@ on:
   push:
     tags:
       - "*"
+
+  workflow_dispatch:
+
 jobs:
   publish:
+    env:
+      REFINE_VERSION: "3.7.0"
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
