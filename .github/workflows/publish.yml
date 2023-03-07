@@ -49,4 +49,4 @@ jobs:
 
       - name: Publish
         if: startsWith(github.ref, 'refs/tags/')
-        run: dotnet nuget push **\*.nupkg --no-restore --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}}
+        run: dotnet nuget push **\*.$GITHUB_REF_NAME.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}}
