@@ -17,10 +17,7 @@ namespace OpenRefine.Net
 
         public OpenRefineClient(string baseUrl = "http://127.0.0.1:3333/")
         {
-            _httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri(baseUrl)
-            };
+            _httpClient = new HttpClient() { BaseAddress = new Uri(baseUrl) };
         }
 
         public OpenRefineClient(HttpClient httpClient)
@@ -28,16 +25,23 @@ namespace OpenRefine.Net
             _httpClient = httpClient;
         }
 
-        public async Task<ApplyOperationsResponse> ApplyOperationsAsync(ApplyOperationsRequest request, CancellationToken cancellationToken = default)
+        public async Task<ApplyOperationsResponse> ApplyOperationsAsync(
+            ApplyOperationsRequest request,
+            CancellationToken cancellationToken = default
+        )
         {
             Url requestUri = new Url("command/core/apply-operations");
-            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
-            requestUri.QueryParams.Add("project", request.ProjectId);
 
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("operations", request.Operations),
-            });
+            var csrfToken = await GetCsrfTokenAsync(cancellationToken);
+
+            var content = new FormUrlEncodedContent(
+                new[]
+                {
+                    new KeyValuePair<string, string>("operations", request.Operations),
+                    new KeyValuePair<string, string>("csrf_token", csrfToken.Token),
+                    new KeyValuePair<string, string>("project", request.ProjectId),
+                }
+            );
 
             var requestMessage = new HttpRequestMessage
             {
@@ -49,10 +53,15 @@ namespace OpenRefine.Net
             return await SendAsync<ApplyOperationsResponse>(requestMessage, cancellationToken);
         }
 
-        public async Task<GetProcessesResponse> CheckStatusOfAsyncProcessesAsync(GetProcessesRequest request, CancellationToken cancellationToken = default)
+        public async Task<GetProcessesResponse> CheckStatusOfAsyncProcessesAsync(
+            GetProcessesRequest request,
+            CancellationToken cancellationToken = default
+        )
         {
             Url requestUri = new Url("command/core/get-processes");
-            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
+            var csrfToken = await GetCsrfTokenAsync(cancellationToken);
+
+            requestUri.QueryParams.Add("csrf_token", csrfToken.Token);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var requestMessage = new HttpRequestMessage
@@ -64,18 +73,30 @@ namespace OpenRefine.Net
             return await SendAsync<GetProcessesResponse>(requestMessage, cancellationToken);
         }
 
-        public async Task<CreateProjectResponse> CreateProjectAsync(CreateProjectRequest request, CancellationToken cancellationToken = default)
+        public async Task<CreateProjectResponse> CreateProjectAsync(
+            CreateProjectRequest request,
+            CancellationToken cancellationToken = default
+        )
         {
             Url requestUri = new Url("command/core/create-project-from-upload");
-            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
+            var csrfToken = await GetCsrfTokenAsync(cancellationToken);
+
+            requestUri.QueryParams.Add("csrf_token", csrfToken.Token);
 
             var multiPartForm = new MultipartFormDataContent();
 
-            string options = request.Options is not null
-                            ? JsonSerializer.Serialize(request.Options)
-                            : string.Empty;
+            multiPartForm.Add(new StringContent(csrfToken.Token), "csrf_token");
 
-            multiPartForm.Add(new ByteArrayContent(request.Content), "project-file", request.FileName);
+            string options = request.Options is not null
+                ? JsonSerializer.Serialize(request.Options)
+                : string.Empty;
+
+            multiPartForm.Add(
+                new ByteArrayContent(request.Content),
+                "project-file",
+                request.FileName
+            );
+
             multiPartForm.Add(new StringContent(request.ProjectName), "project-name");
 
             if (!string.IsNullOrEmpty(request.Format))
@@ -97,20 +118,26 @@ namespace OpenRefine.Net
             if (responseUri.QueryParams.TryGetFirst("project", out var projectIdObject))
             {
                 string projectId = projectIdObject.ToString();
-                return new CreateProjectResponse
-                {
-                    ProjectId = projectId
-                };
+                return new CreateProjectResponse { ProjectId = projectId };
             }
 
-            var responseString = await responseMessage.Content.ReadAsStringAsync();
+            var responseString = await responseMessage.Content
+                .ReadAsStringAsync()
+                .ConfigureAwait(false);
+
             return JsonSerializer.Deserialize<CreateProjectResponse>(responseString);
         }
 
-        public async Task<DeleteProjectResponse> DeleteProjectAsync(DeleteProjectRequest request, CancellationToken cancellationToken = default)
+        public async Task<DeleteProjectResponse> DeleteProjectAsync(
+            DeleteProjectRequest request,
+            CancellationToken cancellationToken = default
+        )
         {
             Url requestUri = new Url("command/core/delete-project");
-            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
+
+            var csrfToken = await GetCsrfTokenAsync(cancellationToken);
+
+            requestUri.QueryParams.Add("csrf_token", csrfToken.Token);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var requestMessage = new HttpRequestMessage
@@ -122,11 +149,16 @@ namespace OpenRefine.Net
             return await SendAsync<DeleteProjectResponse>(requestMessage, cancellationToken);
         }
 
-        public async Task<string> ExportRowsAsync(ExportRowsRequest request, CancellationToken cancellationToken = default)
+        public async Task<string> ExportRowsAsync(
+            ExportRowsRequest request,
+            CancellationToken cancellationToken = default
+        )
         {
             Url requestUri = new Url("command/core/export-rows");
-            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
 
+            var csrfToken = await GetCsrfTokenAsync(cancellationToken);
+
+            requestUri.QueryParams.Add("csrf_token", csrfToken.Token);
             requestUri.QueryParams.Add("project", request.ProjectId);
             requestUri.QueryParams.Add("format", request.Format);
 
@@ -146,7 +178,10 @@ namespace OpenRefine.Net
             {
                 var fileInfo = new FileInfo(request.FileName);
 
-                await using var ms = await responseMessage.Content.ReadAsStreamAsync(cancellationToken);
+                await using var ms = await responseMessage.Content
+                    .ReadAsStreamAsync(cancellationToken)
+                    .ConfigureAwait(false);
+
                 await using var fs = File.Create(fileInfo.FullName);
                 ms.Seek(0, SeekOrigin.Begin);
                 ms.CopyTo(fs);
@@ -159,9 +194,15 @@ namespace OpenRefine.Net
             }
         }
 
-        public async Task<GetProjectsMetadataResponse> GetAllProjectsMetadataAsync(GetProjectsMetadataRequest request, CancellationToken cancellationToken = default)
+        public async Task<GetProjectsMetadataResponse> GetAllProjectsMetadataAsync(
+            GetProjectsMetadataRequest request,
+            CancellationToken cancellationToken = default
+        )
         {
             Url requestUri = new Url("command/core/get-all-project-metadata");
+
+            var csrfToken = await GetCsrfTokenAsync(cancellationToken);
+            requestUri.QueryParams.Add("csrf_token", csrfToken.Token);
 
             var requestMessage = new HttpRequestMessage
             {
@@ -172,7 +213,9 @@ namespace OpenRefine.Net
             return await SendAsync<GetProjectsMetadataResponse>(requestMessage, cancellationToken);
         }
 
-        public async Task<GetCsrfTokenResponse> GetCsrfTokenAsync(CancellationToken cancellationToken = default)
+        public async Task<GetCsrfTokenResponse> GetCsrfTokenAsync(
+            CancellationToken cancellationToken = default
+        )
         {
             Url requestUri = new Url("command/core/get-csrf-token");
 
@@ -185,10 +228,16 @@ namespace OpenRefine.Net
             return await SendAsync<GetCsrfTokenResponse>(requestMessage, cancellationToken);
         }
 
-        public async Task<GetProjectModelsResponse> GetProjectModelsAsync(GetProjectModelsRequest request, CancellationToken cancellationToken = default)
+        public async Task<GetProjectModelsResponse> GetProjectModelsAsync(
+            GetProjectModelsRequest request,
+            CancellationToken cancellationToken = default
+        )
         {
             Url requestUri = new Url("command/core/get-models");
-            requestUri.QueryParams.Add("csrf_token", request.CsrfToken);
+
+            var csrfToken = await GetCsrfTokenAsync(cancellationToken);
+
+            requestUri.QueryParams.Add("csrf_token", csrfToken.Token);
             requestUri.QueryParams.Add("project", request.ProjectId);
 
             var requestMessage = new HttpRequestMessage
@@ -200,20 +249,28 @@ namespace OpenRefine.Net
             return await SendAsync<GetProjectModelsResponse>(requestMessage, cancellationToken);
         }
 
-        private async Task<T> SendAsync<T>(HttpRequestMessage requestMessage, CancellationToken cancellationToken)
+        private async Task<T> SendAsync<T>(
+            HttpRequestMessage requestMessage,
+            CancellationToken cancellationToken
+        )
             where T : class
         {
             try
             {
-                var responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
-                var responseString = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
+                var responseMessage = await _httpClient
+                    .SendAsync(requestMessage, cancellationToken)
+                    .ConfigureAwait(false);
+
+                var responseString = await responseMessage.Content
+                    .ReadAsStringAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
                 responseMessage.EnsureSuccessStatusCode();
 
-                var response = JsonSerializer.Deserialize<T>(responseString, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var response = JsonSerializer.Deserialize<T>(
+                    responseString,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
 
                 return response;
             }
@@ -223,11 +280,16 @@ namespace OpenRefine.Net
             }
         }
 
-        private async Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage, CancellationToken cancellationToken)
+        private async Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage requestMessage,
+            CancellationToken cancellationToken
+        )
         {
             try
             {
-                var responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
+                var responseMessage = await _httpClient
+                    .SendAsync(requestMessage, cancellationToken)
+                    .ConfigureAwait(false);
 
                 responseMessage.EnsureSuccessStatusCode();
 

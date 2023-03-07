@@ -23,7 +23,6 @@ namespace OpenRefine.Net.Tests
             Assert.NotEmpty(csrf.Token);
         }
 
-
         [Fact]
         public async void OpenRefineClient_CreateProject_ShouldReturn_ProjectId()
         {
@@ -34,15 +33,14 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsync();
-
-            var project = await _client.CreateProjectAsync(new CreateProjectRequest
-            {
-                CsrfToken = csrf.Token,
-                ProjectName = fileInfo.Name,
-                FileName = fileInfo.Name,
-                Content = content
-            });
+            var project = await _client.CreateProjectAsync(
+                new CreateProjectRequest
+                {
+                    ProjectName = fileInfo.Name,
+                    FileName = fileInfo.Name,
+                    Content = content
+                }
+            );
 
             Assert.NotEmpty(project.ProjectId);
         }
@@ -57,26 +55,24 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsync();
+            var project = await _client.CreateProjectAsync(
+                new CreateProjectRequest
+                {
+                    ProjectName = fileInfo.Name,
+                    FileName = fileInfo.Name,
+                    Content = content
+                }
+            );
 
-            var project = await _client.CreateProjectAsync(new CreateProjectRequest
-            {
-                CsrfToken = csrf.Token,
-                ProjectName = fileInfo.Name,
-                FileName = fileInfo.Name,
-                Content = content
-            });
-
-            var models = await _client.GetProjectModelsAsync(new GetProjectModelsRequest { 
-                CsrfToken = csrf.Token,
-                ProjectId = project.ProjectId
-            });
+            var models = await _client.GetProjectModelsAsync(
+                new GetProjectModelsRequest { ProjectId = project.ProjectId }
+            );
 
             Assert.NotNull(models.ColumnModel);
         }
 
         [Fact]
-        public async void OpenRefineClient_ApplyOperationsAsync_ShouldReturn_ModifyProjectContent() 
+        public async void OpenRefineClient_ApplyOperationsAsync_ShouldReturn_ModifyProjectContent()
         {
             var fileInfo = new FileInfo("Samples/dates.txt");
 
@@ -85,31 +81,31 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsync();
-
-            var project = await _client.CreateProjectAsync(new CreateProjectRequest
-            {
-                CsrfToken = csrf.Token,
-                ProjectName = fileInfo.Name,
-                FileName = fileInfo.Name,
-                Content = content,
-                Format = SupportedFormats.TextLineBasedSeparatorBased
-            });
+            var project = await _client.CreateProjectAsync(
+                new CreateProjectRequest
+                {
+                    ProjectName = fileInfo.Name,
+                    FileName = fileInfo.Name,
+                    Content = content,
+                    Format = SupportedFormats.TextLineBasedSeparatorBased
+                }
+            );
 
             var operations = File.ReadAllText("Samples/operations.json");
 
-            var appliedOps = await _client.ApplyOperationsAsync(new ApplyOperationsRequest
-            {
-                CsrfToken = csrf.Token,
-                ProjectId = project.ProjectId,
-                Operations = operations
-            });
+            var appliedOps = await _client.ApplyOperationsAsync(
+                new ApplyOperationsRequest
+                {
+                    ProjectId = project.ProjectId,
+                    Operations = operations
+                }
+            );
 
             Assert.Equal("ok", appliedOps.Code.ToLower());
         }
 
         [Fact]
-        public async void OpenRefineClient_ExportRowsAsync_ShouldDownload_Content() 
+        public async void OpenRefineClient_ExportRowsAsync_ShouldDownload_Content()
         {
             var fileInfo = new FileInfo("Samples/dates.txt");
 
@@ -118,22 +114,19 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsync();
+            var project = await _client.CreateProjectAsync(
+                new CreateProjectRequest
+                {
+                    ProjectName = fileInfo.Name,
+                    FileName = fileInfo.Name,
+                    Content = content,
+                    Format = SupportedFormats.TextLineBasedSeparatorBased
+                }
+            );
 
-            var project = await _client.CreateProjectAsync(new CreateProjectRequest
-            {
-                CsrfToken = csrf.Token,
-                ProjectName = fileInfo.Name,
-                FileName = fileInfo.Name,
-                Content = content,
-                Format = SupportedFormats.TextLineBasedSeparatorBased
-            });
-
-            var fileName = await _client.ExportRowsAsync(new ExportRowsRequest { 
-                CsrfToken = csrf.Token,
-                ProjectId = project.ProjectId,
-                FileName = "test.csv"
-            });
+            var fileName = await _client.ExportRowsAsync(
+                new ExportRowsRequest { ProjectId = project.ProjectId, FileName = "test.csv" }
+            );
 
             var results = File.ReadAllText(fileName);
 
@@ -143,7 +136,7 @@ namespace OpenRefine.Net.Tests
         }
 
         [Fact]
-        public async void OpenRefineClient_DeleteProjectAsync_ShouldDeleteProject() 
+        public async void OpenRefineClient_DeleteProjectAsync_ShouldDeleteProject()
         {
             var fileInfo = new FileInfo("Samples/dates.txt");
 
@@ -152,27 +145,25 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsync();
+            var project = await _client.CreateProjectAsync(
+                new CreateProjectRequest
+                {
+                    ProjectName = fileInfo.Name,
+                    FileName = fileInfo.Name,
+                    Content = content,
+                    Format = SupportedFormats.TextLineBasedSeparatorBased
+                }
+            );
 
-            var project = await _client.CreateProjectAsync(new CreateProjectRequest
-            {
-                CsrfToken = csrf.Token,
-                ProjectName = fileInfo.Name,
-                FileName = fileInfo.Name,
-                Content = content,
-                Format = SupportedFormats.TextLineBasedSeparatorBased
-            });
-
-            var deleted = await _client.DeleteProjectAsync(new DeleteProjectRequest {
-                CsrfToken = csrf.Token,
-                ProjectId = project.ProjectId
-            });
+            var deleted = await _client.DeleteProjectAsync(
+                new DeleteProjectRequest { ProjectId = project.ProjectId }
+            );
 
             Assert.Equal("ok", deleted.Code.ToLower());
         }
 
         [Fact]
-        public async void OpenRefineClient_GetAllProjectMetadataAsync_ShouldReturnProjectMetadata() 
+        public async void OpenRefineClient_GetAllProjectMetadataAsync_ShouldReturnProjectMetadata()
         {
             var fileInfo = new FileInfo("Samples/dates.txt");
 
@@ -181,27 +172,25 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsync();
+            var project = await _client.CreateProjectAsync(
+                new CreateProjectRequest
+                {
+                    ProjectName = fileInfo.Name,
+                    FileName = fileInfo.Name,
+                    Content = content,
+                    Format = SupportedFormats.TextLineBasedSeparatorBased
+                }
+            );
 
-            var project = await _client.CreateProjectAsync(new CreateProjectRequest
-            {
-                CsrfToken = csrf.Token,
-                ProjectName = fileInfo.Name,
-                FileName = fileInfo.Name,
-                Content = content,
-                Format = SupportedFormats.TextLineBasedSeparatorBased
-            });
-
-            var metadata = await _client.GetAllProjectsMetadataAsync(new GetProjectsMetadataRequest { 
-                CsrfToken = csrf.Token,
-                ProjectId = project.ProjectId
-            });
+            var metadata = await _client.GetAllProjectsMetadataAsync(
+                new GetProjectsMetadataRequest { ProjectId = project.ProjectId }
+            );
 
             Assert.True(metadata.Projects.ContainsKey(project.ProjectId));
         }
 
         [Fact]
-        public async void OpenRefineClient_CheckStatusOfAsyncProcessesAsync_ShouldReturnOk() 
+        public async void OpenRefineClient_CheckStatusOfAsyncProcessesAsync_ShouldReturnOk()
         {
             var fileInfo = new FileInfo("Samples/dates.txt");
 
@@ -210,21 +199,19 @@ namespace OpenRefine.Net.Tests
             using var fs = fileInfo.OpenRead();
             await fs.ReadAsync(content);
 
-            var csrf = await _client.GetCsrfTokenAsync();
+            var project = await _client.CreateProjectAsync(
+                new CreateProjectRequest
+                {
+                    ProjectName = fileInfo.Name,
+                    FileName = fileInfo.Name,
+                    Content = content,
+                    Format = SupportedFormats.TextLineBasedSeparatorBased
+                }
+            );
 
-            var project = await _client.CreateProjectAsync(new CreateProjectRequest
-            {
-                CsrfToken = csrf.Token,
-                ProjectName = fileInfo.Name,
-                FileName = fileInfo.Name,
-                Content = content,
-                Format = SupportedFormats.TextLineBasedSeparatorBased
-            });
-
-            var processes = await _client.CheckStatusOfAsyncProcessesAsync(new GetProcessesRequest { 
-                CsrfToken = csrf.Token,
-                ProjectId = project.ProjectId
-            });
+            var processes = await _client.CheckStatusOfAsyncProcessesAsync(
+                new GetProcessesRequest { ProjectId = project.ProjectId }
+            );
 
             Assert.NotNull(processes.Processes);
         }
