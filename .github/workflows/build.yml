@@ -28,22 +28,24 @@ jobs:
         with:
           dotnet-version: 7.0.x
 
-      - name: Restore
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --no-restore
-
-      - name: Setup OpenRefine
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: "microsoft" # See 'Supported distributions' for available options
           java-version: "17"
+
+      - name: Setup OpenRefine
         run: |
           curl https://github.com/OpenRefine/OpenRefine/releases/download/$REFINE_VERSION/openrefine-linux-$OPENREFINE_VERSION.tar.gz
           tar xzf openrefine-$REFINE_VERSION-linux.tar.gz
           cd openrefine-$REFINE_VERSION
           ./refine
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
 
       - name: Test
         run: dotnet test --no-restore --no-build --verbosity normal
