@@ -7,7 +7,7 @@
 			Apply refine operations to projects.</Description>
 		<PackageTags>Openrefine;OpenRefine;Google Refine;Refine</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Copyright>2021</Copyright>
+		<Copyright>2023</Copyright>
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/ADelRosarioH/OpenRefine.Net</RepositoryUrl>
 		<RepositoryType>Github</RepositoryType>
