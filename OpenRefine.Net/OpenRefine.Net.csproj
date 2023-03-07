@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<PackageId>OpenRefine.Net</PackageId>
-		<Version>0.0.2</Version>
 		<Authors>Anthony Del Rosario</Authors>
 		<Title>OpenRefine Client</Title>
-		<Description>A .NET client implementation for the OpenRefine API. Create, Export, Delete and Apply refine operations to projects.</Description>
+		<Description>A .NET client implementation for the OpenRefine API. Create, Export, Delete and
+			Apply refine operations to projects.</Description>
 		<PackageTags>Openrefine;OpenRefine;Google Refine;Refine</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Copyright>2021</Copyright>
